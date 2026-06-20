@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>모닝브루 PRD 진단 보고서 v1.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brown: #6B4226; --accent: #E07B39; --bg: #FFFBF5;
+      --card: #FFF4E6; --border: #EDD9C0; --text: #3D2B1F;
+      --muted: #8C6D57; --green: #4A7C59; --red: #C0392B; --yellow: #D4A017;
+    }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px 80px; }
+    .container { max-width: 860px; margin: 0 auto; }
+
+    /* HEADER */
+    .report-header {
+      background: var(--brown); color: #fff; border-radius: 20px;
+      padding: 36px 40px; margin-bottom: 32px;
+    }
+    .report-header .label { font-size: 0.78rem; letter-spacing: 0.1em; opacity: 0.7; margin-bottom: 8px; }
+    .report-header h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 16px; }
+    .meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .meta-item { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; font-size: 0.82rem; }
+    .meta-item strong { display: block; opacity: 0.7; font-size: 0.72rem; letter-spacing: 0.05em; margin-bottom: 3px; }
+
+    /* SECTION TITLE */
+    h2 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--brown); margin: 36px 0 16px; display: flex; align-items: center; gap: 10px; }
+    h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* DIAGNOSIS TABLE */
+    .diag-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 8px; }
+    .diag-card + .diag-card { margin-top: 12px; }
+    .diag-inner { padding: 20px 24px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
+    .diag-num { font-size: 0.72rem; font-weight: 700; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 6px; }
+    .diag-q { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .diag-status { font-size: 0.83rem; color: var(--muted); line-height: 1.6; }
+    .badge {
+      flex-shrink: 0; padding: 6px 14px; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 700; white-space: nowrap;
+    }
+    .badge.ok    { background: #E8F5E9; color: var(--green); }
+    .badge.warn  { background: #FFF8E1; color: var(--yellow); }
+    .badge.fail  { background: #FDEDEC; color: var(--red); }
+
+    /* PRIORITY TABLE */
+    .priority-list { display: flex; flex-direction: column; gap: 12px; }
+    .priority-item {
+      background: #fff; border: 1px solid var(--border); border-radius: 16px;
+      padding: 20px 24px; display: flex; align-items: flex-start; gap: 16px;
+    }
+    .priority-rank { font-size: 1.6rem; flex-shrink: 0; line-height: 1; }
+    .priority-title { font-size: 1rem; font-weight: 700; color: var(--brown); margin-bottom: 6px; }
+    .priority-action { font-size: 0.83rem; color: var(--text); background: var(--card); border-radius: 8px; padding: 8px 12px; margin-bottom: 6px; font-family: monospace; }
+    .priority-reason { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+    /* EXTRA TABLE */
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
+    th { background: var(--card); color: var(--brown); font-size: 0.8rem; font-weight: 700; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { font-size: 0.85rem; padding: 12px 16px; border-bottom: 1px solid #F5EDE0; color: var(--text); line-height: 1.6; }
+    tr:last-child td { border-bottom: none; }
+
+    /* FOOTER */
+    .report-footer { margin-top: 40px; padding: 20px 24px; background: var(--card); border-radius: 14px; font-size: 0.82rem; color: var(--muted); line-height: 1.8; }
+
+    @media (max-width: 560px) {
+      .meta-grid { grid-template-columns: 1fr; }
+      .diag-inner { grid-template-columns: 1fr; }
+      .badge { width: fit-content; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="report-header">
+    <div class="label">DIAGNOSIS REPORT</div>
+    <h1>모닝브루 PRD 진단 보고서</h1>
+    <div class="meta-grid">
+      <div class="meta-item"><strong>버전</strong>v1.0</div>
+      <div class="meta-item"><strong>작성일</strong>2026-06-20</div>
+      <div class="meta-item"><strong>진단 대상</strong>index.html (루트)</div>
+      <div class="meta-item"><strong>PRD 핵심 가치</strong>"망원동 직장인 · 출근 전 픽업 · 빠른 커피"</div>
+    </div>
+  </div>
+
+  <!-- 진단 결과 -->
+  <h2>진단 결과</h2>
+  <div>
+
+    <div class="diag-card">
+      <div class="diag-inner">
+        <div>
+          <div class="diag-num">항목 01</div>
+          <div class="diag-q">'빠른 픽업' 가치가 첫 화면(HERO)에서 느껴지는가?</div>
+          <div class="diag-status">HERO 배지에 "매일 08:00 오픈" 명시. 단 "3~5분 픽업" 등 속도 수치 없음. CTA 버튼은 "오늘 메뉴 확인"으로만 연결 — 예약 직접 유도 없음.</div>
+        </div>
+        <span class="badge warn">⚠️ 부분</span>
+      </div>
+    </div>
+
+    <div class="diag-card">
+      <div class="diag-inner">
+        <div>
+          <div class="diag-num">항목 02</div>
+          <div class="diag-q">처음 온 사람이 30초 안에 '예약'을 알 수 있는가?</div>
+          <div class="diag-status">NAV에 "예약" 링크 존재하나 HERO CTA는 "오늘 메뉴 확인" · "오시는 길"로만 구성. 첫 화면에서 예약 행동 유도 없음.</div>
+        </div>
+        <span class="badge fail">❌ 미흡</span>
+      </div>
+    </div>
+
+    <div class="diag-card">
+      <div class="diag-inner">
+        <div>
+          <div class="diag-num">항목 03</div>
+          <div class="diag-q">예약 폼·목록(Day 03) + Firebase(Day 05)가 index.html에 통합되어 있는가?</div>
+          <div class="diag-status">#reservation 섹션, 예약 추가/삭제 폼, Firebase Firestore 저장/복원, 전체 초기화 버튼 모두 index.html 단일 파일에 통합 완료.</div>
+        </div>
+        <span class="badge ok">✅ 완료</span>
+      </div>
+    </div>
+
+    <div class="diag-card">
+      <div class="diag-inner">
+        <div>
+          <div class="diag-num">항목 04</div>
+          <div class="diag-q">빠진 내용이 있다면?</div>
+          <div class="diag-status">
+            ① HERO에 "픽업 예약하기" CTA 버튼 없음<br>
+            ② "3~5분 픽업" 속도 수치 명시 없음<br>
+            ③ 오늘 영업 여부 실시간 표시 없음<br>
+            ④ 예약 섹션에 "오늘 픽업 가능 시간대" 안내 없음<br>
+            ⑤ 타이틀 "망원동" vs PRD "연남동" — 위치 불일치 확인 필요
+          </div>
+        </div>
+        <span class="badge fail">❌ 개선 필요</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 우선순위 -->
+  <h2>먼저 고칠 우선순위 3가지</h2>
+  <div class="priority-list">
+
+    <div class="priority-item">
+      <div class="priority-rank">🥇</div>
+      <div>
+        <div class="priority-title">HERO에 "픽업 예약하기" CTA 버튼 추가</div>
+        <div class="priority-action">&lt;a href="#reservation"&gt;지금 픽업 예약하기&lt;/a&gt;</div>
+        <div class="priority-reason">첫 화면에서 핵심 행동(예약)으로 즉시 연결 — 30초 룰 미충족 해결</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">🥈</div>
+      <div>
+        <div class="priority-title">"3~5분 픽업" 속도 수치 HERO에 명시</div>
+        <div class="priority-action">HERO 배지 또는 sub 문구에 "주문 후 3~5분 내 픽업" 추가</div>
+        <div class="priority-reason">PRD 핵심 가치인 '빠른 픽업'을 숫자로 증명 — 신뢰감·차별화</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">🥉</div>
+      <div>
+        <div class="priority-title">예약 섹션 상단에 "오늘 픽업 가능 시간" 안내 추가</div>
+        <div class="priority-action">영업시간(08:00~20:00) 기반 안내 문구 삽입</div>
+        <div class="priority-reason">방문자가 폼 작성 전 오늘 예약 가능 여부를 즉시 확인 가능</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 추가 확인 -->
+  <h2>추가 확인 사항</h2>
+  <table>
+    <tr><th>항목</th><th>내용</th></tr>
+    <tr><td>⚠️ 위치 불일치</td><td>index.html은 "망원동", PRD는 "연남동(직장인)" — 어느 쪽이 맞는지 확인 후 통일 필요</td></tr>
+    <tr><td>✅ Firebase 연동</td><td>Day 5 완료 — localStorage → Firestore 전환, 크로스 브라우저 예약 공유 가능</td></tr>
+    <tr><td>📌 다음 단계 (Day 6)</td><td>우선순위 3가지 index.html 반영 후 GitHub 푸시 + Vercel 배포</td></tr>
+  </table>
+
+  <!-- FOOTER -->
+  <div class="report-footer">
+    📌 연관 파일: <code>PRD_Lite_V.1.md</code> · <code>index.html</code> (루트)<br>
+    📌 진단 기준: PRD Lite 핵심 가치 + 30초 룰 + Day 03~05 통합 여부<br>
+    📌 작성: 럭키 (Lucky) · 검토: 최윤정 회장
+  </div>
+
+</div>
+</body>
+</html>
