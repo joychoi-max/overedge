@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>모닝브루 — 예약 관리</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brown:  #6B4226; --dark: #3D2B1F; --accent: #E07B39;
+      --light:  #F4A261; --bg: #FFFBF5; --card: #FFF4E6;
+      --border: #EDD9C0; --text: #4A3728; --muted: #8C6D57;
+      --red: #D9534F; --red-bg: #FDF0F0;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* HEADER */
+    header {
+      background: var(--brown); padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #fff; text-decoration: none; }
+    .header-title { font-size: 0.9rem; color: rgba(255,255,255,0.7); font-weight: 400; }
+
+    /* MAIN LAYOUT */
+    main { max-width: 640px; margin: 0 auto; padding: 32px 20px 80px; }
+
+    /* FORM CARD */
+    .form-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 20px;
+      padding: 28px 24px; margin-bottom: 32px;
+      box-shadow: 0 4px 20px rgba(107,66,38,0.07);
+    }
+    .form-card h2 {
+      font-family: 'Playfair Display', serif; font-size: 1.4rem;
+      color: var(--brown); margin-bottom: 6px;
+    }
+    .form-card p { font-size: 0.85rem; color: var(--muted); margin-bottom: 24px; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.8rem; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; }
+    input, select {
+      padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 0.95rem; font-family: 'Noto Sans KR', sans-serif; color: var(--dark);
+      background: var(--bg); transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+    }
+    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,123,57,0.12); }
+    input::placeholder { color: #C8B09A; }
+
+    .btn-add {
+      margin-top: 20px; width: 100%; padding: 15px;
+      background: var(--accent); color: #fff; border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 16px rgba(224,123,57,0.3);
+    }
+    .btn-add:hover { background: #c96a28; transform: translateY(-1px); }
+    .btn-add:active { transform: translateY(0); }
+
+    /* LIST SECTION */
+    .list-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+    }
+    .list-header h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--brown); }
+    .list-count {
+      background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      background: #fff; border: 2px dashed var(--border); border-radius: 20px;
+      padding: 52px 24px; text-align: center;
+    }
+    .empty-icon { font-size: 2.8rem; margin-bottom: 14px; }
+    .empty-title { font-size: 1rem; font-weight: 700; color: var(--brown); margin-bottom: 6px; }
+    .empty-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+    /* RESERVATION LIST */
+    .reservation-list { display: flex; flex-direction: column; gap: 12px; }
+    .reservation-item {
+      background: #fff; border: 1px solid var(--border); border-radius: 16px;
+      padding: 18px 20px; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; transition: box-shadow 0.2s;
+      animation: slideIn 0.25s ease;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .reservation-item:hover { box-shadow: 0 4px 16px rgba(107,66,38,0.09); }
+    .item-info { flex: 1; min-width: 0; }
+    .item-name { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+    .item-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .item-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 999px; padding: 3px 10px; font-size: 0.78rem; color: var(--text);
+    }
+    .item-number { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+    .btn-delete {
+      flex-shrink: 0; padding: 8px 14px;
+      background: var(--red-bg); color: var(--red); border: 1.5px solid #F5C6C5;
+      border-radius: 8px; font-size: 0.8rem; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-delete:hover { background: var(--red); color: #fff; transform: scale(1.04); }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px;
+      font-size: 0.88rem; font-weight: 500; opacity: 0; transition: all 0.3s ease; z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 480px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: 1; }
+      header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="header-logo">☕ Morning Brew</a>
+  <span class="header-title">예약 관리 페이지</span>
+</header>
+
+<!-- MAIN -->
+<main>
+
+  <!-- 예약 입력 폼 -->
+  <div class="form-card">
+    <h2>새 예약 추가</h2>
+    <p>픽업 예약을 입력하고 '예약 추가' 버튼을 눌러주세요</p>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="name">이름</label>
+        <input type="text" id="name" placeholder="홍길동" maxlength="20">
+      </div>
+      <div class="form-group">
+        <label for="phone">연락처</label>
+        <input type="tel" id="phone" placeholder="010-0000-0000" maxlength="13">
+      </div>
+      <div class="form-group">
+        <label for="time">픽업 시간</label>
+        <input type="time" id="time" min="08:00" max="20:00">
+      </div>
+      <div class="form-group">
+        <label for="people">인원수</label>
+        <select id="people">
+          <option value="1">1명</option>
+          <option value="2">2명</option>
+          <option value="3">3명</option>
+          <option value="4">4명</option>
+          <option value="5">5명 이상</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-add" onclick="addReservation()">+ 예약 추가</button>
+  </div>
+
+  <!-- 예약 목록 -->
+  <div class="list-header">
+    <h2>예약 목록</h2>
+    <span class="list-count" id="count">0건</span>
+  </div>
+
+  <div id="list-area"></div>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // JS 배열에 임시 저장 (내일 localStorage로 전환 예정)
+  let reservations = [];
+
+  function addReservation() {
+    const name   = document.getElementById('name').value.trim();
+    const phone  = document.getElementById('phone').value.trim();
+    const time   = document.getElementById('time').value;
+    const people = document.getElementById('people').value;
+
+    if (!name)  { showToast('⚠️ 이름을 입력해주세요'); return; }
+    if (!phone) { showToast('⚠️ 연락처를 입력해주세요'); return; }
+    if (!time)  { showToast('⚠️ 픽업 시간을 선택해주세요'); return; }
+
+    const id = Date.now();
+    reservations.push({ id, name, phone, time, people });
+    reservations.sort((a, b) => a.time.localeCompare(b.time));
+
+    renderList();
+    clearForm();
+    showToast('✓ 예약이 추가되었습니다');
+  }
+
+  function deleteReservation(id) {
+    reservations = reservations.filter(r => r.id !== id);
+    renderList();
+    showToast('🗑 예약이 삭제되었습니다');
+  }
+
+  function renderList() {
+    const area  = document.getElementById('list-area');
+    const count = document.getElementById('count');
+    count.textContent = reservations.length + '건';
+
+    if (reservations.length === 0) {
+      area.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <div class="empty-title">아직 예약이 없습니다</div>
+          <div class="empty-desc">첫 예약을 추가해 보세요!<br>위 폼에서 이름, 연락처, 픽업 시간을 입력하세요.</div>
+        </div>`;
+      return;
+    }
+
+    area.innerHTML = `<div class="reservation-list">` +
+      reservations.map((r, i) => `
+        <div class="reservation-item">
+          <div class="item-info">
+            <div class="item-name">${i + 1}. ${escapeHtml(r.name)}</div>
+            <div class="item-meta">
+              <span class="item-tag">🕐 ${r.time}</span>
+              <span class="item-tag">👤 ${r.people}명</span>
+            </div>
+            <div class="item-number">📞 ${escapeHtml(r.phone)}</div>
+          </div>
+          <button class="btn-delete" onclick="deleteReservation(${r.id})">삭제</button>
+        </div>`).join('') +
+    `</div>`;
+  }
+
+  function clearForm() {
+    document.getElementById('name').value  = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('time').value  = '';
+    document.getElementById('people').value = '1';
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // 초기 렌더
+  renderList();
+</script>
+</body>
+</html>
