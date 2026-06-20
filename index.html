@@ -30,6 +30,41 @@
     .nav-links a { text-decoration: none; font-size: 0.85rem; font-weight: 500; color: var(--muted); transition: color 0.2s; }
     .nav-links a:hover { color: var(--accent); }
 
+    /* RESERVATION */
+    #reservation { background: #FFF8F0; }
+    .res-form { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(107,66,38,0.07); margin-bottom: 28px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.8rem; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; }
+    input[type=text], input[type=tel], input[type=time], select {
+      padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 0.95rem; font-family: 'Noto Sans KR', sans-serif; color: var(--dark);
+      background: var(--bg); transition: border-color 0.2s; outline: none;
+    }
+    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,123,57,0.12); }
+    input::placeholder { color: #C8B09A; }
+    .btn-add { margin-top: 20px; width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 16px rgba(224,123,57,0.3); }
+    .btn-add:hover { background: #c96a28; transform: translateY(-1px); }
+    .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .list-count { background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+    .empty-state { background: #fff; border: 2px dashed var(--border); border-radius: 20px; padding: 40px 24px; text-align: center; }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .empty-title { font-size: 1rem; font-weight: 700; color: var(--brown); margin-bottom: 6px; }
+    .empty-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .reservation-list { display: flex; flex-direction: column; gap: 12px; }
+    .reservation-item { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; animation: slideIn 0.25s ease; }
+    @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+    .item-info { flex: 1; }
+    .item-name { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+    .item-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .item-tag { display: inline-flex; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; font-size: 0.78rem; color: var(--text); }
+    .item-number { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+    .btn-delete { flex-shrink: 0; padding: 8px 14px; background: #FDF0F0; color: #D9534F; border: 1.5px solid #F5C6C5; border-radius: 8px; font-size: 0.8rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s; }
+    .btn-delete:hover { background: #D9534F; color: #fff; }
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px; font-size: 0.88rem; opacity: 0; transition: all 0.3s ease; z-index: 999; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+
     /* HERO */
     #hero {
       min-height: 100vh; display: flex; flex-direction: column;
@@ -163,6 +198,7 @@
   <div class="nav-links">
     <a href="#today">오늘의 메뉴</a>
     <a href="#menu">전체 메뉴</a>
+    <a href="#reservation">예약</a>
     <a href="#info">오시는 길</a>
     <a href="#contact">문의</a>
   </div>
@@ -271,6 +307,47 @@
   </div>
 </section>
 
+<!-- RESERVATION -->
+<section id="reservation">
+  <div class="inner">
+    <span class="section-label">Reservation</span>
+    <h2 class="section-title">픽업 예약</h2>
+    <p class="section-desc">방문 전 미리 예약하시면 기다리지 않아도 됩니다</p>
+    <div class="res-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="r-name">이름</label>
+          <input type="text" id="r-name" placeholder="홍길동" maxlength="20">
+        </div>
+        <div class="form-group">
+          <label for="r-phone">연락처</label>
+          <input type="tel" id="r-phone" placeholder="010-0000-0000" maxlength="13">
+        </div>
+        <div class="form-group">
+          <label for="r-time">픽업 시간</label>
+          <input type="time" id="r-time" min="08:00" max="20:00">
+        </div>
+        <div class="form-group">
+          <label for="r-people">인원수</label>
+          <select id="r-people">
+            <option value="1">1명</option>
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4">4명</option>
+            <option value="5">5명 이상</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-add" onclick="addReservation()">+ 예약 추가</button>
+    </div>
+    <div class="list-header">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--brown)">예약 목록</h3>
+      <span class="list-count" id="res-count">0건</span>
+    </div>
+    <div id="res-list"></div>
+  </div>
+</section>
+
 <!-- INFO -->
 <section id="info">
   <div class="inner">
@@ -332,5 +409,49 @@
   <p style="margin-top:6px"><a href="https://instagram.com/morningbrew_official" target="_blank">@morningbrew_official</a></p>
 </footer>
 
+<div class="toast" id="toast"></div>
+<script>
+  let reservations = [];
+  function addReservation() {
+    const name   = document.getElementById('r-name').value.trim();
+    const phone  = document.getElementById('r-phone').value.trim();
+    const time   = document.getElementById('r-time').value;
+    const people = document.getElementById('r-people').value;
+    if (!name)  { showToast('⚠️ 이름을 입력해주세요'); return; }
+    if (!phone) { showToast('⚠️ 연락처를 입력해주세요'); return; }
+    if (!time)  { showToast('⚠️ 픽업 시간을 선택해주세요'); return; }
+    reservations.push({ id: Date.now(), name, phone, time, people });
+    reservations.sort((a, b) => a.time.localeCompare(b.time));
+    renderList();
+    document.getElementById('r-name').value = '';
+    document.getElementById('r-phone').value = '';
+    document.getElementById('r-time').value = '';
+    document.getElementById('r-people').value = '1';
+    showToast('✓ 예약이 추가되었습니다');
+  }
+  function deleteReservation(id) {
+    reservations = reservations.filter(r => r.id !== id);
+    renderList();
+    showToast('🗑 예약이 삭제되었습니다');
+  }
+  function renderList() {
+    const area = document.getElementById('res-list');
+    document.getElementById('res-count').textContent = reservations.length + '건';
+    if (reservations.length === 0) {
+      area.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">아직 예약이 없습니다</div><div class="empty-desc">첫 예약을 추가해 보세요!<br>위 폼에서 이름, 연락처, 픽업 시간을 입력하세요.</div></div>`;
+      return;
+    }
+    area.innerHTML = `<div class="reservation-list">` + reservations.map((r, i) =>
+      `<div class="reservation-item"><div class="item-info"><div class="item-name">${i+1}. ${esc(r.name)}</div><div class="item-meta"><span class="item-tag">🕐 ${r.time}</span><span class="item-tag">👤 ${r.people}명</span></div><div class="item-number">📞 ${esc(r.phone)}</div></div><button class="btn-delete" onclick="deleteReservation(${r.id})">삭제</button></div>`
+    ).join('') + `</div>`;
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  renderList();
+</script>
 </body>
 </html>
