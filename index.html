@@ -321,7 +321,7 @@
         </div>
         <div class="form-group">
           <label for="r-phone">연락처</label>
-          <input type="tel" id="r-phone" placeholder="010-0000-0000" maxlength="13">
+          <input type="tel" id="r-phone" placeholder="010-0000-0000" maxlength="13" oninput="formatPhone(this)">
         </div>
         <div class="form-group">
           <label for="r-time">픽업 시간</label>
@@ -419,6 +419,7 @@
     const people = document.getElementById('r-people').value;
     if (!name)  { showToast('⚠️ 이름을 입력해주세요'); return; }
     if (!phone) { showToast('⚠️ 연락처를 입력해주세요'); return; }
+    if (!/^010-\d{4}-\d{4}$/.test(phone)) { showToast('⚠️ 010-0000-0000 형식으로 입력해주세요'); return; }
     if (!time)  { showToast('⚠️ 픽업 시간을 선택해주세요'); return; }
     reservations.push({ id: Date.now(), name, phone, time, people });
     reservations.sort((a, b) => a.time.localeCompare(b.time));
@@ -449,6 +450,12 @@
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  function formatPhone(el) {
+    let v = el.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length <= 3) el.value = v;
+    else if (v.length <= 7) el.value = v.slice(0,3) + '-' + v.slice(3);
+    else el.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7);
   }
   function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   renderList();
