@@ -111,10 +111,13 @@
     /* 배경: 라떼아트+식물, 밝고 따뜻하게 */
     #hero-bg {
       position: absolute; inset: -6%; z-index: 0;
-      background: url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1920&q=80&fit=crop') center/cover no-repeat;
-      filter: brightness(1.08) saturate(1.05);
       will-change: transform;
       transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    #hero-bg img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(1.1) saturate(1.08);
+      display: block;
     }
     /* 크림 워밍 오버레이 — 아주 얇게 */
     #hero::after {
@@ -378,7 +381,7 @@
 <!-- HERO -->
 <div id="cursor-glow"></div>
 <section id="hero">
-  <div id="hero-bg"></div>
+  <div id="hero-bg"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1920&q=80&fit=crop" alt="" loading="eager" crossorigin="anonymous"></div>
   <span class="hero-badge">망원동 핸드드립 카페 · 매일 08:00 오픈</span>
   <h1 class="hero-title">
     <span class="sub-label">망원동 핸드드립 카페</span>
