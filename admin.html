@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>모닝브루 관리자</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    :root {
+      --brown: #6B4226;
+      --dark: #3D2B1F;
+      --accent: #E07B39;
+      --light: #F4A261;
+      --bg: #FFFBF5;
+      --card: #FFF4E6;
+      --border: #EDD9C0;
+      --text: #4A3728;
+      --muted: #8C6D57;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── 인증 오버레이 ── */
+    #auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(61, 43, 31, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #auth-overlay.hidden { display: none; }
+
+    .auth-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 340px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(61,43,31,0.25);
+    }
+    .auth-card h2 {
+      font-size: 1.4rem;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+    .auth-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .auth-card input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+    }
+    .auth-card input:focus { border-color: var(--accent); }
+    .auth-card button {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .auth-card button:hover { background: var(--brown); }
+    #auth-error {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: #c0392b;
+      min-height: 18px;
+    }
+
+    /* ── 헤더 ── */
+    header {
+      background: var(--dark);
+      color: #fff;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .header-actions { display: flex; gap: 10px; }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.18s;
+    }
+    .btn-refresh {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+    .btn-refresh:hover { background: rgba(255,255,255,0.28); }
+    .btn-logout {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-logout:hover { background: var(--light); color: var(--dark); }
+
+    /* ── 메인 콘텐츠 ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    /* ── 통계 카드 ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .stat-card .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .stat-card .stat-num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1;
+    }
+    .stat-card.stat-pending .stat-num { color: #d48806; }
+    .stat-card.stat-confirmed .stat-num { color: #2d7a3a; }
+    .stat-card.stat-completed .stat-num { color: #6b7280; }
+    .stat-card.stat-cancelled .stat-num { color: #b91c1c; }
+
+    /* ── 검색 & 필터 ── */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-bar input,
+    .filter-bar select {
+      padding: 9px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .filter-bar input { flex: 1; min-width: 180px; }
+    .filter-bar input:focus,
+    .filter-bar select:focus { border-color: var(--accent); }
+    .filter-bar select { min-width: 140px; }
+
+    /* ── 테이블 ── */
+    .table-wrap {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .table-scroll { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    thead tr {
+      background: var(--dark);
+      color: #fff;
+    }
+    thead th {
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(237, 217, 192, 0.3); }
+    tbody td {
+      padding: 11px 14px;
+      vertical-align: middle;
+    }
+
+    /* 시간 셀 */
+    .td-time { white-space: nowrap; color: var(--muted); font-size: 0.82rem; }
+
+    /* 상태 뱃지 */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .badge-pending  { background: #fef3c7; color: #92400e; }
+    .badge-confirmed { background: #d1fae5; color: #065f46; }
+    .badge-completed { background: #f3f4f6; color: #374151; }
+    .badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+    /* 상태 select */
+    .status-select {
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.82rem;
+      cursor: pointer;
+      outline: none;
+    }
+    .status-select:focus { border-color: var(--accent); }
+
+    /* 메모 셀 */
+    .note-cell {
+      min-width: 140px;
+      max-width: 220px;
+    }
+    .note-display {
+      cursor: pointer;
+      color: var(--text);
+      min-height: 22px;
+      border-bottom: 1px dashed transparent;
+      transition: border-color 0.15s;
+      word-break: break-all;
+    }
+    .note-display:hover { border-bottom-color: var(--accent); }
+    .note-display.empty { color: var(--muted); font-style: italic; }
+    .note-input {
+      width: 100%;
+      padding: 4px 8px;
+      border: 1.5px solid var(--accent);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+    }
+
+    /* 삭제 버튼 */
+    .btn-delete {
+      background: none;
+      border: 1.5px solid #fca5a5;
+      color: #dc2626;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-delete:hover { background: #fee2e2; }
+
+    /* 빈 상태 */
+    .empty-row td {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* 로딩 스피너 */
+    .loading-row td {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+    }
+    .spinner {
+      display: inline-block;
+      width: 22px; height: 22px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 결과 수 표시 */
+    .result-info {
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* 토스트 */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 24px;
+      background: var(--dark);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 9998;
+      max-width: 300px;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.error { background: #991b1b; }
+
+    @media (max-width: 700px) {
+      main { padding: 16px 10px 40px; }
+      thead th:nth-child(3),
+      tbody td:nth-child(3) { display: none; } /* 연락처 숨김 */
+    }
+  </style>
+</head>
+<body>
+
+<!-- 인증 오버레이 -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <h2>🍵 모닝브루 관리자</h2>
+    <p>접근하려면 비밀번호를 입력하세요</p>
+    <input type="password" id="pw-input" placeholder="비밀번호" autocomplete="current-password" />
+    <button id="pw-btn">로그인</button>
+    <div id="auth-error"></div>
+  </div>
+</div>
+
+<!-- 헤더 -->
+<header>
+  <h1>🍵 모닝브루 관리자</h1>
+  <div class="header-actions">
+    <button class="btn btn-refresh" id="refresh-btn">🔄 새로고침</button>
+    <button class="btn btn-logout" id="logout-btn">로그아웃</button>
+  </div>
+</header>
+
+<!-- 메인 -->
+<main>
+  <!-- 통계 카드 -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">전체</div>
+      <div class="stat-num" id="stat-total">—</div>
+    </div>
+    <div class="stat-card stat-pending">
+      <div class="stat-label">대기중</div>
+      <div class="stat-num" id="stat-pending">—</div>
+    </div>
+    <div class="stat-card stat-confirmed">
+      <div class="stat-label">확정</div>
+      <div class="stat-num" id="stat-confirmed">—</div>
+    </div>
+    <div class="stat-card stat-completed">
+      <div class="stat-label">완료</div>
+      <div class="stat-num" id="stat-completed">—</div>
+    </div>
+    <div class="stat-card stat-cancelled">
+      <div class="stat-label">취소</div>
+      <div class="stat-num" id="stat-cancelled">—</div>
+    </div>
+  </div>
+
+  <!-- 검색 & 필터 -->
+  <div class="filter-bar">
+    <input type="text" id="search-input" placeholder="🔍 이름 또는 연락처 검색..." />
+    <select id="status-filter">
+      <option value="">전체 상태</option>
+      <option value="pending">대기중</option>
+      <option value="confirmed">확정</option>
+      <option value="completed">완료</option>
+      <option value="cancelled">취소</option>
+    </select>
+  </div>
+
+  <!-- 테이블 -->
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>시간</th>
+            <th>이름</th>
+            <th>연락처</th>
+            <th>메뉴</th>
+            <th>인원</th>
+            <th>상태</th>
+            <th>메모</th>
+            <th>삭제</th>
+          </tr>
+        </thead>
+        <tbody id="reservation-tbody">
+          <tr class="loading-row">
+            <td colspan="8"><span class="spinner"></span>불러오는 중...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="result-info" id="result-info"></div>
+  </div>
+</main>
+
+<!-- 토스트 -->
+<div id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── 상수 ── */
+  const ADMIN_PW = 'morningbrew2026';
+  const SUPABASE_URL = '__SUPABASE_URL__';
+  const SUPABASE_KEY = '__SUPABASE_KEY__';
+  const SESSION_KEY = 'mb_admin_auth';
+
+  /* ── XSS 방지 ── */
+  function esc(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  /* ── Supabase 클라이언트 ── */
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  /* ── 상태 ── */
+  let allData = [];
+  let searchQ = '';
+  let statusFilter = '';
+
+  /* ── 토스트 ── */
+  let toastTimer = null;
+  function toast(msg, isError = false) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show' + (isError ? ' error' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.className = ''; }, 2800);
+  }
+
+  /* ── 인증 ── */
+  const authOverlay = document.getElementById('auth-overlay');
+  const pwInput = document.getElementById('pw-input');
+  const pwBtn = document.getElementById('pw-btn');
+  const authError = document.getElementById('auth-error');
+
+  function checkAuth() {
+    if (sessionStorage.getItem(SESSION_KEY) === '1') {
+      authOverlay.classList.add('hidden');
+      init();
+    }
+  }
+
+  function doLogin() {
+    if (pwInput.value === ADMIN_PW) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      authOverlay.classList.add('hidden');
+      authError.textContent = '';
+      init();
+    } else {
+      authError.textContent = '비밀번호가 올바르지 않습니다.';
+      pwInput.value = '';
+      pwInput.focus();
+    }
+  }
+
+  pwBtn.addEventListener('click', doLogin);
+  pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+  });
+
+  /* ── 초기화 ── */
+  function init() {
+    fetchData();
+    document.getElementById('refresh-btn').addEventListener('click', fetchData);
+    document.getElementById('search-input').addEventListener('input', e => {
+      searchQ = e.target.value.trim().toLowerCase();
+      renderTable();
+    });
+    document.getElementById('status-filter').addEventListener('change', e => {
+      statusFilter = e.target.value;
+      renderTable();
+    });
+  }
+
+  /* ── 데이터 패치 ── */
+  async function fetchData() {
+    const tbody = document.getElementById('reservation-tbody');
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="8"><span class="spinner"></span>불러오는 중...</td></tr>';
+
+    const { data, error } = await sb
+      .from('reservations')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="8">❌ 데이터를 불러오지 못했습니다: ' + esc(error.message) + '</td></tr>';
+      toast('데이터 로드 실패: ' + error.message, true);
+      return;
+    }
+
+    allData = data || [];
+    updateStats();
+    renderTable();
+  }
+
+  /* ── 통계 업데이트 ── */
+  function updateStats() {
+    const count = s => allData.filter(r => r.status === s).length;
+    document.getElementById('stat-total').textContent = allData.length;
+    document.getElementById('stat-pending').textContent = count('pending');
+    document.getElementById('stat-confirmed').textContent = count('confirmed');
+    document.getElementById('stat-completed').textContent = count('completed');
+    document.getElementById('stat-cancelled').textContent = count('cancelled');
+  }
+
+  /* ── 필터 ── */
+  function filtered() {
+    return allData.filter(r => {
+      const matchSearch = !searchQ ||
+        (r.name && r.name.toLowerCase().includes(searchQ)) ||
+        (r.phone && r.phone.toLowerCase().includes(searchQ));
+      const matchStatus = !statusFilter || r.status === statusFilter;
+      return matchSearch && matchStatus;
+    });
+  }
+
+  /* ── 상태 배지 텍스트 ── */
+  const STATUS_LABEL = {
+    pending: '대기중',
+    confirmed: '확정',
+    completed: '완료',
+    cancelled: '취소',
+  };
+
+  /* ── 테이블 렌더 ── */
+  function renderTable() {
+    const rows = filtered();
+    const tbody = document.getElementById('reservation-tbody');
+    const info = document.getElementById('result-info');
+
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="8">예약 내역이 없습니다.</td></tr>';
+      info.textContent = '';
+      return;
+    }
+
+    info.textContent = `총 ${rows.length}건 표시 중`;
+
+    const fragment = document.createDocumentFragment();
+
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.dataset.id = r.id;
+
+      /* 시간 */
+      const tdTime = document.createElement('td');
+      tdTime.className = 'td-time';
+      const dt = r.time ? new Date(r.time) : null;
+      tdTime.textContent = dt
+        ? dt.toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+        : (r.created_at ? new Date(r.created_at).toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—');
+
+      /* 이름 */
+      const tdName = document.createElement('td');
+      tdName.textContent = r.name || '—';
+
+      /* 연락처 */
+      const tdPhone = document.createElement('td');
+      tdPhone.textContent = r.phone || '—';
+
+      /* 메뉴 */
+      const tdMenu = document.createElement('td');
+      tdMenu.textContent = r.menu_preference || '—';
+
+      /* 인원 */
+      const tdCount = document.createElement('td');
+      tdCount.textContent = r.count != null ? r.count + '명' : '—';
+
+      /* 상태 select */
+      const tdStatus = document.createElement('td');
+      const sel = document.createElement('select');
+      sel.className = 'status-select';
+      ['pending', 'confirmed', 'completed', 'cancelled'].forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = STATUS_LABEL[s];
+        if (s === r.status) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', () => updateStatus(r.id, sel.value, tr));
+      tdStatus.appendChild(sel);
+
+      /* 메모 */
+      const tdNote = document.createElement('td');
+      tdNote.className = 'note-cell';
+      const noteDisplay = document.createElement('span');
+      noteDisplay.className = 'note-display' + (!r.note ? ' empty' : '');
+      noteDisplay.textContent = r.note || '메모 추가...';
+      noteDisplay.title = '클릭하여 편집';
+      noteDisplay.addEventListener('click', () => startNoteEdit(r, noteDisplay, tdNote));
+      tdNote.appendChild(noteDisplay);
+
+      /* 삭제 */
+      const tdDel = document.createElement('td');
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-delete';
+      delBtn.textContent = '삭제';
+      delBtn.addEventListener('click', () => deleteRow(r.id, tr));
+      tdDel.appendChild(delBtn);
+
+      tr.appendChild(tdTime);
+      tr.appendChild(tdName);
+      tr.appendChild(tdPhone);
+      tr.appendChild(tdMenu);
+      tr.appendChild(tdCount);
+      tr.appendChild(tdStatus);
+      tr.appendChild(tdNote);
+      tr.appendChild(tdDel);
+      fragment.appendChild(tr);
+    });
+
+    tbody.innerHTML = '';
+    tbody.appendChild(fragment);
+  }
+
+  /* ── 상태 업데이트 ── */
+  async function updateStatus(id, newStatus, tr) {
+    const { error } = await sb
+      .from('reservations')
+      .update({ status: newStatus })
+      .eq('id', id);
+
+    if (error) {
+      toast('상태 변경 실패: ' + error.message, true);
+      return;
+    }
+
+    const item = allData.find(r => r.id === id);
+    if (item) item.status = newStatus;
+    updateStats();
+    toast('상태가 변경되었습니다: ' + (STATUS_LABEL[newStatus] || newStatus));
+  }
+
+  /* ── 메모 인라인 편집 ── */
+  function startNoteEdit(r, displayEl, cell) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'note-input';
+    input.value = r.note || '';
+    input.maxLength = 200;
+    cell.innerHTML = '';
+    cell.appendChild(input);
+    input.focus();
+
+    async function save() {
+      const newNote = input.value.trim();
+      const { error } = await sb
+        .from('reservations')
+        .update({ note: newNote })
+        .eq('id', r.id);
+
+      if (error) {
+        toast('메모 저장 실패: ' + error.message, true);
+      } else {
+        r.note = newNote;
+        toast('메모가 저장되었습니다.');
+      }
+
+      cell.innerHTML = '';
+      const span = document.createElement('span');
+      span.className = 'note-display' + (!newNote ? ' empty' : '');
+      span.textContent = newNote || '메모 추가...';
+      span.title = '클릭하여 편집';
+      span.addEventListener('click', () => startNoteEdit(r, span, cell));
+      cell.appendChild(span);
+    }
+
+    input.addEventListener('blur', save);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+      if (e.key === 'Escape') {
+        cell.innerHTML = '';
+        const span = document.createElement('span');
+        span.className = 'note-display' + (!r.note ? ' empty' : '');
+        span.textContent = r.note || '메모 추가...';
+        span.title = '클릭하여 편집';
+        span.addEventListener('click', () => startNoteEdit(r, span, cell));
+        cell.appendChild(span);
+      }
+    });
+  }
+
+  /* ── 삭제 ── */
+  async function deleteRow(id, tr) {
+    const item = allData.find(r => r.id === id);
+    const name = item ? item.name : '이 예약';
+    if (!confirm(`"${name}" 예약을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+
+    const { error } = await sb
+      .from('reservations')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast('삭제 실패: ' + error.message, true);
+      return;
+    }
+
+    allData = allData.filter(r => r.id !== id);
+    updateStats();
+    tr.style.transition = 'opacity 0.25s';
+    tr.style.opacity = '0';
+    setTimeout(() => { renderTable(); }, 260);
+    toast('예약이 삭제되었습니다.');
+  }
+
+  /* ── 시작 ── */
+  checkAuth();
+})();
+</script>
+</body>
+</html>

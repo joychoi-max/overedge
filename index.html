@@ -92,75 +92,9 @@
     input::placeholder { color: #C8B09A; }
     .btn-add { margin-top: 20px; width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 16px rgba(224,123,57,0.3); }
     .btn-add:hover { background: #c96a28; transform: translateY(-1px); }
-    .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .list-count { background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
-    .empty-state { background: #fff; border: 2px dashed var(--border); border-radius: 20px; padding: 40px 24px; text-align: center; }
-    .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .empty-title { font-size: 1rem; font-weight: 700; color: var(--brown); margin-bottom: 6px; }
-    .empty-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-    .reservation-list { display: flex; flex-direction: column; gap: 12px; }
-    .reservation-item { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; animation: slideIn 0.25s ease; }
     @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-    .item-info { flex: 1; }
-    .item-name { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
-    .item-meta { display: flex; flex-wrap: wrap; gap: 8px; }
-    .item-tag { display: inline-flex; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; font-size: 0.78rem; color: var(--text); }
-    .item-number { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
-    .btn-delete { flex-shrink: 0; padding: 8px 14px; background: #FDF0F0; color: #D9534F; border: 1.5px solid #F5C6C5; border-radius: 8px; font-size: 0.8rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s; }
-    .btn-delete:hover { background: #D9534F; color: #fff; }
-    .btn-reset { padding: 6px 14px; background: transparent; color: var(--muted); border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.78rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; }
-    .btn-reset:hover { background: #D9534F; color: #fff; border-color: #D9534F; }
-    .next-action-card {
-      display: none; margin-top: 20px;
-      background: linear-gradient(135deg, #FFF4E6, #F0F7F2);
-      border: 1.5px solid var(--border); border-radius: 20px; padding: 24px 20px;
-      text-align: center; animation: slideIn 0.3s ease;
-    }
-    .next-action-card.show { display: block; }
-    .next-action-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
-    .next-action-desc { font-size: 0.95rem; font-weight: 700; color: var(--dark); margin-bottom: 16px; }
-    .next-action-btns { display: flex; flex-direction: column; gap: 10px; }
-    .btn-kakaomap {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 13px 20px; background: #FEE500; color: #3C1E1E;
-      text-decoration: none; font-size: 0.9rem; font-weight: 700;
-      border-radius: 10px; transition: opacity 0.2s, transform 0.15s;
-    }
-    .btn-kakaomap:hover { opacity: 0.88; transform: translateY(-1px); }
-    .btn-insta-follow {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 13px 20px;
-      background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-      color: #fff; text-decoration: none; font-size: 0.9rem; font-weight: 700;
-      border-radius: 10px; transition: opacity 0.2s, transform 0.15s;
-    }
-    .btn-insta-follow:hover { opacity: 0.88; transform: translateY(-1px); }
-    @media (min-width: 480px) { .next-action-btns { flex-direction: row; } }
     .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px; font-size: 0.88rem; opacity: 0; transition: all 0.3s ease; z-index: 999; white-space: nowrap; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .save-error-card {
-      display: none; margin-top: 16px;
-      background: #FDEDEC; border: 1.5px solid #F5C6C5; border-radius: 16px; padding: 20px;
-      animation: slideIn 0.3s ease;
-    }
-    .save-error-card.show { display: block; }
-    .save-error-title { font-size: 0.9rem; font-weight: 700; color: #C0392B; margin-bottom: 6px; }
-    .save-error-desc { font-size: 0.83rem; color: #6B4226; margin-bottom: 14px; line-height: 1.6; }
-    .save-error-btns { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn-retry {
-      flex: 1; padding: 11px 16px; background: var(--accent); color: #fff;
-      border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700;
-      font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-retry:hover { background: #c96a28; }
-    .btn-call-fallback {
-      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 11px 16px; background: #fff; color: var(--brown);
-      text-decoration: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700;
-      border: 1.5px solid var(--border); transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-call-fallback:hover { border-color: var(--accent); color: var(--accent); }
     @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
 
     /* HERO */
@@ -510,34 +444,6 @@
       </div>
       <button class="btn-add" onclick="addReservation()">+ 예약 추가</button>
     </div>
-    <div class="save-error-card" id="save-error">
-      <div class="save-error-title">⚠️ 예약 저장에 실패했습니다</div>
-      <div class="save-error-desc">일시적인 네트워크 오류일 수 있습니다. 다시 시도하거나,<br>전화로 예약해 주시면 바로 도와드립니다.</div>
-      <div class="save-error-btns">
-        <button class="btn-retry" onclick="retryReservation()">↺ 다시 시도</button>
-        <a href="tel:010-5772-7558" class="btn-call-fallback">📞 전화로 예약하기</a>
-      </div>
-    </div>
-    <div class="list-header">
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--brown)">예약 목록</h3>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span class="list-count" id="res-count">0건</span>
-        <button class="btn-reset" onclick="resetAll()">전체 초기화</button>
-      </div>
-    </div>
-    <div id="res-list"></div>
-    <div class="next-action-card" id="next-action">
-      <div class="next-action-title">예약 완료 🎉</div>
-      <div class="next-action-desc">픽업 시간에 맞춰 찾아오세요!</div>
-      <div class="next-action-btns">
-        <a href="https://map.kakao.com/link/map/모닝브루,37.5563,126.9069" target="_blank" class="btn-kakaomap">
-          🗺️ 카카오맵으로 길찾기
-        </a>
-        <a href="https://instagram.com/morningbrew_official" target="_blank" class="btn-insta-follow">
-          📸 인스타 팔로우
-        </a>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -682,41 +588,15 @@
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
-<!-- Firebase + Supabase 비즈니스 로직 (모듈 스코프로 격리) -->
+<!-- Supabase 비즈니스 로직 (모듈 스코프로 격리) -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAhhQKYedXIYQATOnhNTLp84CtTW3eTaWY",
-    authDomain: "morningbrew-ebaba.firebaseapp.com",
-    projectId: "morningbrew-ebaba",
-    storageBucket: "morningbrew-ebaba.firebasestorage.app",
-    messagingSenderId: "1013540017488",
-    appId: "1:1013540017488:web:b23388aaec60e6b53e8855"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
-  const COL = collection(db, 'reservations');
-
   // Supabase (모듈 스코프 내부에서만 접근)
   const { createClient } = window.supabase;
   const _sb = createClient(
-    'https://yxwsrylioibzmvwkwhmm.supabase.co',
-    'sb_publishable_CNGgZJsCPCh5Vcf-nKMcYw_VHFnbiFT'
+    '__SUPABASE_URL__',
+    '__SUPABASE_KEY__'
   );
 
-  async function loadReservations() {
-    try {
-      const snap = await getDocs(query(COL, orderBy('time')));
-      const list = [];
-      snap.forEach(d => list.push({ firestoreId: d.id, ...d.data() }));
-      renderList(list);
-    } catch(e) { console.error('예약 로드 오류'); }
-  }
-
-  // [수정 #1] 외부에서 필요한 함수만 window에 노출
   window.addReservation = async function() {
     const name   = document.getElementById('r-name').value.trim();
     const phone  = document.getElementById('r-phone').value.trim();
@@ -736,13 +616,11 @@
       }]);
       if (sbError) throw sbError;
 
-      await addDoc(COL, { name, phone, menu, time, people, createdAt: Date.now() });
-
-      // [DEBUG] localStorage 저장 (PII 제거된 로그)
+      // localStorage 저장
       const stored = JSON.parse(localStorage.getItem('mb_reservations') || '[]');
       stored.push({ name, phone, menu_preference: menu, time, count: Number(people), savedAt: new Date().toISOString() });
       localStorage.setItem('mb_reservations', JSON.stringify(stored));
-      console.log('[DEBUG] localStorage 저장 완료:', stored.length, '건'); // [수정 #2] PII 제거
+      console.log('[DEBUG] localStorage 저장 완료:', stored.length, '건');
 
       document.getElementById('r-name').value = '';
       document.getElementById('r-phone').value = '';
@@ -751,54 +629,13 @@
       document.getElementById('r-people').value = '1';
 
       showToast('✓ 예약이 접수되었습니다! 방문 전날 연락드리겠습니다.', 3500);
-      document.getElementById('next-action').classList.add('show');
-      await loadReservations();
     } catch(e) {
       showToast('⚠️ 잠시 후 다시 시도해주세요.');
-      document.getElementById('save-error').classList.add('show');
     }
   };
-
-  window.resetAll = async function() {
-    if (!confirm('예약 목록을 전체 초기화할까요?')) return;
-    try {
-      const snap = await getDocs(COL);
-      await Promise.all(snap.docs.map(d => deleteDoc(doc(db, 'reservations', d.id))));
-      showToast('🗑 전체 초기화 완료');
-      await loadReservations();
-    } catch(e) { showToast('⚠️ 초기화 실패'); }
-  };
-
-  // [수정 #3] firestoreId XSS — onclick 인라인 제거, 이벤트 위임으로 처리
-  document.getElementById('res-list').addEventListener('click', async (e) => {
-    const btn = e.target.closest('.btn-delete');
-    if (!btn) return;
-    const firestoreId = btn.dataset.id;
-    if (!firestoreId) return;
-    try {
-      await deleteDoc(doc(db, 'reservations', firestoreId));
-      showToast('🗑 예약이 삭제되었습니다');
-      await loadReservations();
-    } catch(e) { showToast('⚠️ 삭제 실패'); }
-  });
-
-  await loadReservations();
 </script>
 
 <script>
-  function renderList(list) {
-    const area = document.getElementById('res-list');
-    document.getElementById('res-count').textContent = (list ? list.length : 0) + '건';
-    if (!list || list.length === 0) {
-      area.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">아직 예약이 없습니다</div><div class="empty-desc">첫 예약을 추가해 보세요!<br>위 폼에서 이름, 연락처, 픽업 시간을 입력하세요.</div></div>`;
-      return;
-    }
-    // [수정 #3] data-id 속성 사용, onclick 인라인 제거
-    area.innerHTML = `<div class="reservation-list">` + list.map((r, i) =>
-      `<div class="reservation-item"><div class="item-info"><div class="item-name">${i+1}. ${esc(r.name)}</div><div class="item-meta"><span class="item-tag">🕐 ${esc(r.time)}</span><span class="item-tag">👤 ${esc(r.people)}명</span></div><div class="item-number">📞 ${esc(r.phone)}</div></div><button class="btn-delete" data-id="${esc(r.firestoreId)}">삭제</button></div>`
-    ).join('') + `</div>`;
-  }
-
   function showToast(msg, duration = 2200) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
@@ -815,11 +652,6 @@
   function esc(s) {
     if (!s) return '';
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
-  }
-
-  function retryReservation() {
-    document.getElementById('save-error').classList.remove('show');
-    window.addReservation();
   }
 
   (function checkSconeStock() {
