@@ -110,8 +110,57 @@
     .btn-delete:hover { background: #D9534F; color: #fff; }
     .btn-reset { padding: 6px 14px; background: transparent; color: var(--muted); border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.78rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; }
     .btn-reset:hover { background: #D9534F; color: #fff; border-color: #D9534F; }
+    .next-action-card {
+      display: none; margin-top: 20px;
+      background: linear-gradient(135deg, #FFF4E6, #F0F7F2);
+      border: 1.5px solid var(--border); border-radius: 20px; padding: 24px 20px;
+      text-align: center; animation: slideIn 0.3s ease;
+    }
+    .next-action-card.show { display: block; }
+    .next-action-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
+    .next-action-desc { font-size: 0.95rem; font-weight: 700; color: var(--dark); margin-bottom: 16px; }
+    .next-action-btns { display: flex; flex-direction: column; gap: 10px; }
+    .btn-kakaomap {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 20px; background: #FEE500; color: #3C1E1E;
+      text-decoration: none; font-size: 0.9rem; font-weight: 700;
+      border-radius: 10px; transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-kakaomap:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-insta-follow {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 20px;
+      background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+      color: #fff; text-decoration: none; font-size: 0.9rem; font-weight: 700;
+      border-radius: 10px; transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-insta-follow:hover { opacity: 0.88; transform: translateY(-1px); }
+    @media (min-width: 480px) { .next-action-btns { flex-direction: row; } }
     .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px; font-size: 0.88rem; opacity: 0; transition: all 0.3s ease; z-index: 999; white-space: nowrap; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .save-error-card {
+      display: none; margin-top: 16px;
+      background: #FDEDEC; border: 1.5px solid #F5C6C5; border-radius: 16px; padding: 20px;
+      animation: slideIn 0.3s ease;
+    }
+    .save-error-card.show { display: block; }
+    .save-error-title { font-size: 0.9rem; font-weight: 700; color: #C0392B; margin-bottom: 6px; }
+    .save-error-desc { font-size: 0.83rem; color: #6B4226; margin-bottom: 14px; line-height: 1.6; }
+    .save-error-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-retry {
+      flex: 1; padding: 11px 16px; background: var(--accent); color: #fff;
+      border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-retry:hover { background: #c96a28; }
+    .btn-call-fallback {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 11px 16px; background: #fff; color: var(--brown);
+      text-decoration: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700;
+      border: 1.5px solid var(--border); transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-call-fallback:hover { border-color: var(--accent); color: var(--accent); }
     @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
 
     /* HERO */
@@ -174,8 +223,27 @@
     .badge-ok { background: #D4EDDA; color: #2D5A3D; }
     .badge-few { background: #FFF3CD; color: #856404; }
     .badge-out { background: #F8D7DA; color: #721C24; }
+    .scone-out-notice {
+      display: none; grid-column: 1 / -1;
+      padding: 13px 18px; border-radius: 12px;
+      background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+      color: #fff; text-decoration: none; font-size: 0.85rem; font-weight: 700;
+      text-align: center; animation: slideIn 0.3s ease;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .scone-out-notice:hover { opacity: 0.88; transform: translateY(-1px); }
+    .scone-out-notice.show { display: block; }
     .today-update { text-align: center; margin-top: 20px; font-size: 0.8rem; color: var(--muted); }
     .today-update span { color: var(--green); font-weight: 700; }
+    .btn-reserve-now {
+      display: block; width: 100%; margin-top: 20px; padding: 16px;
+      background: var(--green); color: #fff; text-align: center;
+      font-size: 1rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif;
+      text-decoration: none; border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(74,124,89,0.30);
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-reserve-now:hover { background: #3a6348; transform: translateY(-2px); }
 
     /* MENU */
     #menu { background: #FFF8F0; }
@@ -191,6 +259,18 @@
     .menu-name { font-size: 1rem; font-weight: 700; color: var(--dark); display: block; }
     .menu-note { font-size: 0.8rem; color: var(--muted); }
     .menu-price { font-size: 1.05rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+    /* MENU 예약 버튼 */
+    .btn-menu-reserve {
+      display: block; width: 100%; margin-top: 20px; padding: 15px;
+      background: transparent; color: var(--brown);
+      text-align: center; font-size: 0.95rem; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      text-decoration: none; border-radius: 12px;
+      border: 2px solid var(--border);
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .btn-menu-reserve:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 
     /* INFO */
     #info { background: var(--bg); }
@@ -220,6 +300,16 @@
       font-weight: 500; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.25); transition: background 0.2s;
     }
     .btn-phone:hover { background: rgba(255,255,255,0.22); }
+
+    /* FAQ 예약 버튼 */
+    .btn-faq-reserve {
+      display: inline-block; padding: 15px 36px;
+      background: var(--accent); color: #fff;
+      text-decoration: none; font-size: 1rem; font-weight: 700;
+      border-radius: 12px; box-shadow: 0 4px 16px rgba(224,123,57,0.30);
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-faq-reserve:hover { background: #c96a28; transform: translateY(-2px); }
 
     /* FOOTER */
     footer { background: var(--dark); color: rgba(255,255,255,0.4); text-align: center; padding: 28px 24px; font-size: 0.8rem; }
@@ -297,7 +387,7 @@
         </div>
         <span class="today-badge badge-ok">✓ 있음</span>
       </div>
-      <div class="today-card">
+      <div class="today-card" id="scone-card">
         <div class="today-left">
           <div class="today-icon">🥐</div>
           <div>
@@ -305,8 +395,11 @@
             <span class="today-desc">얼그레이 스콘 · 오늘 구움</span>
           </div>
         </div>
-        <span class="today-badge badge-few">⚡ 3개 남음</span>
+        <span class="today-badge badge-few" id="scone-badge">⚡ 3개 남음</span>
       </div>
+      <a href="https://instagram.com/morningbrew_official" target="_blank" class="scone-out-notice" id="scone-out-notice">
+        📸 오늘 스콘 소진 — 내일 메뉴는 인스타 스토리에서 확인하세요 →
+      </a>
       <div class="today-card">
         <div class="today-left">
           <div class="today-icon">🍹</div>
@@ -329,6 +422,7 @@
       </div>
     </div>
     <p class="today-update">📸 더 자세한 오늘 메뉴는 <span>인스타그램 스토리</span>에서 확인하세요</p>
+    <a href="#reservation" class="btn-reserve-now">☕ 바로 픽업 예약하기</a>
   </div>
 </section>
 
@@ -368,6 +462,7 @@
         <span class="menu-price">6,000원</span>
       </div>
     </div>
+    <a href="#reservation" class="btn-menu-reserve">☕ 이 메뉴로 픽업 예약하기</a>
   </div>
 </section>
 
@@ -404,6 +499,14 @@
       </div>
       <button class="btn-add" onclick="addReservation()">+ 예약 추가</button>
     </div>
+    <div class="save-error-card" id="save-error">
+      <div class="save-error-title">⚠️ 예약 저장에 실패했습니다</div>
+      <div class="save-error-desc">일시적인 네트워크 오류일 수 있습니다. 다시 시도하거나,<br>전화로 예약해 주시면 바로 도와드립니다.</div>
+      <div class="save-error-btns">
+        <button class="btn-retry" onclick="retryReservation()">↺ 다시 시도</button>
+        <a href="tel:010-5772-7558" class="btn-call-fallback">📞 전화로 예약하기</a>
+      </div>
+    </div>
     <div class="list-header">
       <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--brown)">예약 목록</h3>
       <div style="display:flex;align-items:center;gap:10px">
@@ -412,6 +515,18 @@
       </div>
     </div>
     <div id="res-list"></div>
+    <div class="next-action-card" id="next-action">
+      <div class="next-action-title">예약 완료 🎉</div>
+      <div class="next-action-desc">픽업 시간에 맞춰 찾아오세요!</div>
+      <div class="next-action-btns">
+        <a href="https://map.kakao.com/link/map/모닝브루,37.5563,126.9069" target="_blank" class="btn-kakaomap">
+          🗺️ 카카오맵으로 길찾기
+        </a>
+        <a href="https://instagram.com/morningbrew_official" target="_blank" class="btn-insta-follow">
+          📸 인스타 팔로우
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -539,6 +654,9 @@
       </details>
 
     </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a href="#reservation" class="btn-faq-reserve">☕ 픽업 예약하러 가기</a>
+    </div>
   </div>
 </section>
 
@@ -609,8 +727,12 @@
       document.getElementById('r-time').value = '';
       document.getElementById('r-people').value = '1';
       showToast('✓ 예약이 추가되었습니다');
+      document.getElementById('next-action').classList.add('show');
       await loadReservations();
-    } catch(e) { showToast('⚠️ 저장 실패: ' + e.message); }
+    } catch(e) {
+      showToast('⚠️ 저장 실패 — 아래 안내를 확인해 주세요');
+      document.getElementById('save-error').classList.add('show');
+    }
   }
 
   async function deleteReservation(firestoreId) {
@@ -659,8 +781,20 @@
 
   function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  // 페이지 로드 시 localStorage 데이터 복원
-  renderList();
+  function retryReservation() {
+    document.getElementById('save-error').classList.remove('show');
+    addReservation();
+  }
+
+  // 스콘 소진 시 인스타 안내 표시
+  (function checkSconeStock() {
+    const badge = document.getElementById('scone-badge');
+    const notice = document.getElementById('scone-out-notice');
+    if (badge && notice && badge.classList.contains('badge-out')) {
+      notice.classList.add('show');
+    }
+  })();
+
 </script>
 </body>
 </html>
