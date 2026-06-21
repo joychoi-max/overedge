@@ -482,6 +482,17 @@
           <label for="r-phone">연락처</label>
           <input type="tel" id="r-phone" placeholder="010-0000-0000" maxlength="13" oninput="formatPhone(this)">
         </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label for="r-menu">원하는 메뉴</label>
+          <select id="r-menu">
+            <option value="">-- 메뉴를 선택해주세요 --</option>
+            <option value="핸드드립 커피">핸드드립 커피 (5,500원)</option>
+            <option value="오늘의 원두">오늘의 원두 (4,500원)</option>
+            <option value="수제 스콘">수제 스콘 (3,500원)</option>
+            <option value="계절 과일 에이드">계절 과일 에이드 (6,000원)</option>
+            <option value="핸드드립+스콘 세트">핸드드립+스콘 세트</option>
+          </select>
+        </div>
         <div class="form-group">
           <label for="r-time">픽업 시간</label>
           <input type="time" id="r-time" min="08:00" max="20:00">
@@ -668,6 +679,9 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
@@ -701,6 +715,13 @@
 </script>
 
 <script>
+  // Supabase 클라이언트 초기화
+  const { createClient } = supabase;
+  const _sb = createClient(
+    'https://yxwsrylioibzmvwkwhmm.supabase.co',
+    'sb_publishable_CNGgZJsCPCh5Vcf-nKMcYw_VHFnbiFT'
+  );
+
   async function loadReservations() {
     try {
       const q = window._query(window._COL, window._orderBy('time'));
@@ -714,23 +735,42 @@
   async function addReservation() {
     const name   = document.getElementById('r-name').value.trim();
     const phone  = document.getElementById('r-phone').value.trim();
+    const menu   = document.getElementById('r-menu').value;
     const time   = document.getElementById('r-time').value;
     const people = document.getElementById('r-people').value;
+
     if (!name)  { showToast('⚠️ 이름을 입력해주세요'); return; }
     if (!phone) { showToast('⚠️ 연락처를 입력해주세요'); return; }
     if (!/^010-\d{4}-\d{4}$/.test(phone)) { showToast('⚠️ 010-0000-0000 형식으로 입력해주세요'); return; }
+    if (!menu)  { showToast('⚠️ 원하는 메뉴를 선택해주세요'); return; }
     if (!time)  { showToast('⚠️ 픽업 시간을 선택해주세요'); return; }
+
     try {
-      await window._addDoc(window._COL, { name, phone, time, people, createdAt: Date.now() });
+      // Supabase INSERT
+      const { error: sbError } = await _sb.from('reservations').insert([{
+        name,
+        phone,
+        menu_preference: menu,
+        time,
+        count: Number(people)
+      }]);
+      if (sbError) throw sbError;
+
+      // Firebase INSERT (기존 목록 표시용)
+      await window._addDoc(window._COL, { name, phone, menu, time, people, createdAt: Date.now() });
+
+      // 폼 초기화
       document.getElementById('r-name').value = '';
       document.getElementById('r-phone').value = '';
+      document.getElementById('r-menu').value = '';
       document.getElementById('r-time').value = '';
       document.getElementById('r-people').value = '1';
-      showToast('✓ 예약이 추가되었습니다');
+
+      showToast('✓ 예약이 접수되었습니다! 방문 전날 연락드리겠습니다.', 3500);
       document.getElementById('next-action').classList.add('show');
       await loadReservations();
     } catch(e) {
-      showToast('⚠️ 저장 실패 — 아래 안내를 확인해 주세요');
+      showToast('⚠️ 잠시 후 다시 시도해주세요.');
       document.getElementById('save-error').classList.add('show');
     }
   }
@@ -766,10 +806,10 @@
     ).join('') + `</div>`;
   }
 
-  function showToast(msg) {
+  function showToast(msg, duration = 2200) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
+    setTimeout(() => t.classList.remove('show'), duration);
   }
 
   function formatPhone(el) {
