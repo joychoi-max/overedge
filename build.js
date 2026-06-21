@@ -15,7 +15,7 @@ const replacements = {
 const outDir = path.join(__dirname, 'public');
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
 
-['index.html', 'admin.html'].forEach(file => {
+['index.html', 'admin.html', 'v2.html'].forEach(file => {
   const src = path.join(__dirname, file);
   if (!fs.existsSync(src)) return;
   let content = fs.readFileSync(src, 'utf8');
