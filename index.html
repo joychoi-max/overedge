@@ -59,25 +59,32 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --brown:  #6B4226; --dark: #3D2B1F; --accent: #E07B39;
-      --light:  #F4A261; --bg: #FFFBF5; --card: #FFF4E6;
-      --border: #EDD9C0; --text: #4A3728; --muted: #8C6D57;
-      --green:  #4A7C59; --green-bg: #F0F7F2;
+      --green:   #00704A;
+      --dark:    #1E3932;
+      --mid:     #2C7A51;
+      --accent:  #CBA258;
+      --light:   #D4E9E2;
+      --bg:      #F2F0EB;
+      --card:    #FFFFFF;
+      --border:  #E0DDD8;
+      --text:    #1E3932;
+      --muted:   #6B8F7E;
+      --brown:   #1E3932;
     }
     html { scroll-behavior: smooth; }
     body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
 
     /* NAV */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 24px;
-      background: rgba(255,251,245,0.92); backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
+      padding: 0 32px; height: 64px;
+      background: var(--dark);
     }
-    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--brown); }
-    .nav-links { display: flex; gap: 20px; }
-    .nav-links a { text-decoration: none; font-size: 0.85rem; font-weight: 500; color: var(--muted); transition: color 0.2s; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: #fff; letter-spacing: 0.04em; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { text-decoration: none; font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.82); transition: color 0.2s; letter-spacing: 0.04em; }
     .nav-links a:hover { color: var(--accent); }
 
     /* RESERVATION */
@@ -91,10 +98,10 @@
       font-size: 0.95rem; font-family: 'Noto Sans KR', sans-serif; color: var(--dark);
       background: var(--bg); transition: border-color 0.2s; outline: none;
     }
-    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,123,57,0.12); }
+    input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,112,74,0.12); }
     input::placeholder { color: #C8B09A; }
-    .btn-add { margin-top: 20px; width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 16px rgba(224,123,57,0.3); }
-    .btn-add:hover { background: #c96a28; transform: translateY(-1px); }
+    .btn-add { margin-top: 20px; width: 100%; padding: 15px; background: var(--green); color: #fff; border: none; border-radius: 999px; font-size: 0.95rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 16px rgba(0,112,74,0.25); letter-spacing: 0.04em; }
+    .btn-add:hover { background: #005c3b; transform: translateY(-1px); }
     @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
     .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px; font-size: 0.88rem; opacity: 0; transition: all 0.3s ease; z-index: 999; white-space: nowrap; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -103,131 +110,95 @@
     /* ── HERO ── */
     #hero {
       min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: center; align-items: center; text-align: center;
-      padding: 100px 24px 60px;
+      justify-content: center; align-items: flex-start;
+      padding: 120px 8% 80px;
       position: relative; overflow: hidden;
-      background: #f5ede3;
+      background: var(--dark);
     }
-    /* 배경: 라떼아트+식물, 밝고 따뜻하게 */
     #hero-bg {
-      position: absolute; inset: -6%; z-index: 0;
+      position: absolute; inset: -4%; z-index: 0;
       will-change: transform;
-      transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94);
+      transition: transform 0.14s cubic-bezier(0.25,0.46,0.45,0.94);
     }
     #hero-bg img {
-      width: 100%; height: 100%; object-fit: cover;
-      filter: brightness(1.1) saturate(1.08);
-      display: block;
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: brightness(0.38) saturate(0.8);
     }
-    /* 크림 워밍 오버레이 — 아주 얇게 */
     #hero::after {
       content: ''; position: absolute; inset: 0; z-index: 1;
-      background: linear-gradient(
-        170deg,
-        rgba(255,252,245,0.38) 0%,
-        rgba(255,235,200,0.15) 45%,
-        rgba(50,20,5,0.42) 100%
-      );
+      background: linear-gradient(100deg, rgba(30,57,50,0.82) 0%, rgba(30,57,50,0.3) 60%, transparent 100%);
     }
     #hero > * { position: relative; z-index: 2; }
 
-    /* 보케 파티클 (이모지 없이 CSS만) */
-    .bokeh {
-      position: absolute; z-index: 1; border-radius: 50%; pointer-events: none;
-      background: radial-gradient(circle, rgba(255,220,150,0.55) 0%, transparent 70%);
-      animation: floatBokeh ease-in-out infinite;
-    }
-    @keyframes floatBokeh {
-      0%,100% { transform: translateY(0) scale(1); opacity: 0.5; }
-      50%      { transform: translateY(-28px) scale(1.12); opacity: 0.8; }
-    }
-
-    /* 커서 글로우 */
+    .bokeh { display: none; }
     #cursor-glow {
-      width: 280px; height: 280px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(224,123,57,0.18) 0%, transparent 65%);
+      width: 320px; height: 320px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,112,74,0.12) 0%, transparent 65%);
       position: fixed; pointer-events: none; z-index: 9999;
       transform: translate(-50%,-50%);
-      transition: left 0.18s ease, top 0.18s ease;
+      transition: left 0.2s ease, top 0.2s ease;
     }
 
-    /* 뱃지 */
     .hero-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.6); border: 1px solid rgba(200,150,80,0.4);
-      color: #7a4a1a; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.07em;
-      padding: 7px 20px; border-radius: 999px; margin-bottom: 28px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 2px 14px rgba(224,123,57,0.12);
-      opacity: 0; animation: fadeSlideUp 0.7s 0.2s cubic-bezier(0.22,1,0.36,1) forwards;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,112,74,0.25); border: 1px solid rgba(0,112,74,0.5);
+      color: #a8d5bc; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+      padding: 6px 18px; border-radius: 999px; margin-bottom: 24px;
+      text-transform: uppercase;
+      opacity: 0; animation: fadeSlideUp 0.7s 0.15s cubic-bezier(0.22,1,0.36,1) forwards;
     }
-    .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #e07b39; animation: pulse 1.8s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+    .hero-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.8)} }
 
-    /* 타이틀 */
     .hero-title {
-      font-family: 'Playfair Display', serif; font-size: clamp(3.2rem,12vw,5.8rem);
-      color: #fff; line-height: 1.08; margin-bottom: 10px;
-      text-shadow: 0 4px 32px rgba(30,10,0,0.35), 0 1px 0 rgba(0,0,0,0.1);
-      opacity: 0; animation: fadeSlideUp 0.85s 0.42s cubic-bezier(0.22,1,0.36,1) forwards;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem,8vw,5.5rem);
+      color: #fff; line-height: 1.06; margin-bottom: 20px;
+      max-width: 640px;
+      text-align: left;
+      opacity: 0; animation: fadeSlideUp 0.85s 0.35s cubic-bezier(0.22,1,0.36,1) forwards;
     }
     .hero-title .sub-label {
-      font-size: clamp(0.95rem,3.5vw,1.4rem); font-family:'Noto Sans KR',sans-serif;
-      font-weight: 400; display: block; margin-bottom: 6px;
-      color: rgba(255,255,255,0.88); letter-spacing: 0.06em;
-      text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+      font-size: clamp(0.8rem,2vw,1rem); font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 400; display: block; margin-bottom: 10px;
+      color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
     }
-    .hero-title em { font-style: italic; color: #f4c07a; }
-
+    .hero-title em { font-style: italic; color: #a8d5bc; }
     .hero-sub {
-      font-size: clamp(0.95rem,2.5vw,1.1rem); color: rgba(255,255,255,0.85);
-      font-weight: 300; margin-bottom: 44px; max-width: 300px; line-height: 1.8;
-      text-shadow: 0 1px 8px rgba(0,0,0,0.3);
-      opacity: 0; animation: fadeSlideUp 0.85s 0.62s cubic-bezier(0.22,1,0.36,1) forwards;
+      font-size: clamp(0.9rem,2vw,1.05rem); color: rgba(255,255,255,0.72);
+      font-weight: 300; margin-bottom: 40px; max-width: 400px;
+      line-height: 1.9; text-align: left;
+      opacity: 0; animation: fadeSlideUp 0.85s 0.52s cubic-bezier(0.22,1,0.36,1) forwards;
     }
     .hero-cta {
-      display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 270px;
-      opacity: 0; animation: fadeSlideUp 0.85s 0.8s cubic-bezier(0.22,1,0.36,1) forwards;
+      display: flex; flex-direction: row; gap: 14px; flex-wrap: wrap;
+      opacity: 0; animation: fadeSlideUp 0.85s 0.68s cubic-bezier(0.22,1,0.36,1) forwards;
     }
     @keyframes fadeSlideUp {
-      from { opacity:0; transform:translateY(30px); }
+      from { opacity:0; transform:translateY(24px); }
       to   { opacity:1; transform:translateY(0); }
     }
-
-    /* 버튼 */
     .btn-primary {
-      display: block; width: 100%; padding: 16px 32px;
-      background: linear-gradient(135deg, #e07b39 0%, #c96028 100%);
-      color: #fff; text-decoration: none; font-size: 1rem; font-weight: 700;
-      border-radius: 14px; text-align: center;
-      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s;
-      box-shadow: 0 6px 24px rgba(224,123,57,0.42);
-      position: relative; overflow: hidden;
+      display: inline-block; padding: 14px 32px;
+      background: var(--green); color: #fff;
+      text-decoration: none; font-size: 0.9rem; font-weight: 700;
+      border-radius: 999px; text-align: center;
+      transition: background 0.2s, transform 0.18s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(0,112,74,0.35);
+      letter-spacing: 0.04em;
     }
-    .btn-primary::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
-      border-radius: 14px; opacity: 0; transition: opacity 0.3s;
-    }
-    .btn-primary:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 36px rgba(224,123,57,0.5); }
-    .btn-primary:hover::after { opacity: 1; }
-    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-primary:hover { background: #005c3b; transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,112,74,0.45); }
     .btn-secondary {
-      display: block; width: 100%; padding: 15px 32px;
-      background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.92);
-      text-decoration: none; font-size: 0.95rem; font-weight: 500;
-      border-radius: 14px; text-align: center;
-      border: 1.5px solid rgba(255,255,255,0.4);
-      backdrop-filter: blur(10px);
-      transition: background 0.2s, transform 0.2s, border-color 0.2s;
+      display: inline-block; padding: 13px 30px;
+      background: transparent; color: #fff;
+      text-decoration: none; font-size: 0.9rem; font-weight: 600;
+      border-radius: 999px; text-align: center;
+      border: 1.5px solid rgba(255,255,255,0.5);
+      transition: background 0.2s, border-color 0.2s, transform 0.18s;
+      letter-spacing: 0.04em;
     }
-    .btn-secondary:hover { background: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.7); transform: translateY(-2px); }
-    .hero-scroll {
-      margin-top: 52px; color: rgba(255,255,255,0.5); font-size: 0.72rem;
-      letter-spacing: 0.15em; text-transform: uppercase;
-      animation: bounce 2.5s ease-in-out infinite;
-    }
-    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: #fff; transform: translateY(-2px); }
+    .hero-scroll { display: none; }
 
     /* SECTION COMMON */
     section { padding: 72px 24px; }
@@ -367,7 +338,7 @@
 
 <!-- NAV -->
 <nav>
-  <span class="nav-logo">Morning Brew</span>
+  <span class="nav-logo">☕ Morning Brew</span>
   <div class="nav-links">
     <a href="#today">오늘의 메뉴</a>
     <a href="#menu">전체 메뉴</a>
@@ -381,18 +352,17 @@
 <!-- HERO -->
 <div id="cursor-glow"></div>
 <section id="hero">
-  <div id="hero-bg"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1920&q=80&fit=crop" alt="" loading="eager" crossorigin="anonymous"></div>
-  <span class="hero-badge">망원동 핸드드립 카페 · 매일 08:00 오픈</span>
+  <div id="hero-bg"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&q=80&fit=crop" alt="모닝브루 커피" loading="eager"></div>
+  <span class="hero-badge">Specialty Coffee · Handdrip</span>
   <h1 class="hero-title">
     <span class="sub-label">망원동 핸드드립 카페</span>
     모닝<em>브루</em>
   </h1>
-  <p class="hero-sub">매일 아침, 직접 내리는<br>한 잔으로 하루를 시작하세요</p>
+  <p class="hero-sub">매일 아침, 싱글 오리진 원두를<br>바리스타가 직접 핸드드립으로 내립니다.<br>망원역 도보 6분 · 화~일 08:00–20:00</p>
   <div class="hero-cta">
-    <a href="#today" class="btn-primary">오늘 메뉴 확인</a>
-    <a href="#info" class="btn-secondary">오시는 길</a>
+    <a href="#today" class="btn-primary">오늘 메뉴 보기</a>
+    <a href="#reservation" class="btn-secondary">픽업 예약하기</a>
   </div>
-  <p class="hero-scroll">↓ scroll</p>
 </section>
 
 <!-- GEO: AI 검색 인용을 위한 사업 소개 단락 -->
